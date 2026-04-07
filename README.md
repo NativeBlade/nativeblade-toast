@@ -8,77 +8,72 @@ Toast notification shell component for [NativeBlade](https://github.com/user/nat
 composer require nativeblade/toast
 ```
 
-That's it. Auto-discovery handles the rest.
+That's it. Run `php artisan nativeblade:dev` and the component is synced automatically.
 
 ## Usage
 
-### Basic
+### Via JavaScript (Bridge)
 
 ```blade
-<x-nativeblade-toast message="Settings saved!" />
+<button onclick="__nbBridge('toast', { message: 'Saved!', type: 'success' })">
+    Save
+</button>
+
+<button onclick="__nbBridge('toast', { message: 'Something went wrong', type: 'error' })">
+    Delete
+</button>
+
+<button onclick="__nbBridge('toast', { message: 'Check your input', type: 'warning', duration: 5000 })">
+    Validate
+</button>
 ```
 
-### Types
+### Via Blade Component
 
 ```blade
-<x-nativeblade-toast message="File uploaded" type="success" />
-<x-nativeblade-toast message="Something went wrong" type="error" />
-<x-nativeblade-toast message="Check your input" type="warning" />
-<x-nativeblade-toast message="New version available" type="info" />
-```
-
-### Custom Duration
-
-```blade
-{{-- 5 seconds --}}
-<x-nativeblade-toast message="Please wait..." type="info" :duration="5000" />
-```
-
-### Triggered by Livewire
-
-```blade
-<button wire:click="save">Save</button>
+<x-nativeblade-toast message="Settings saved!" type="success" />
 
 @if($saved)
-    <x-nativeblade-toast message="Saved!" type="success" />
+    <x-nativeblade-toast message="Done!" type="success" />
 @endif
 ```
 
-```php
-class Settings extends Component
-{
-    public bool $saved = false;
-
-    public function save()
-    {
-        // ...
-        $this->saved = true;
-    }
-}
-```
-
-### Triggered from JavaScript (Shell)
+### Via Shell JS
 
 ```javascript
 import { nb } from '@nativeblade/wasm-app/nb.js';
 
-// From any shell component
-nb.navigate('/settings'); // after save, the page renders with the toast
+nb.navigate('/settings');
+// toast from shell component
+window.__nb.navigate('/save');
 ```
 
-## Props
+### Types
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
+| Type | Color |
+|------|-------|
+| `info` | Gray |
+| `success` | Green |
+| `error` | Red |
+| `warning` | Yellow |
+
+### Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
 | `message` | string | `''` | Text to display |
 | `type` | string | `'info'` | `info`, `success`, `error`, `warning` |
 | `duration` | int | `3000` | Auto-hide delay in milliseconds |
 
 ## How It Works
 
-This is a **shell component** — it renders outside the WebView in the native Tauri shell. The Blade template outputs a hidden `<div data-nb="toast">` with data attributes. NativeBlade extracts this from the HTML response and passes it to the JavaScript `render()` function, which creates a floating toast element in the parent window.
+This is a **shell component** — it renders outside the WebView in the native Tauri shell.
 
-Because it lives outside the iframe, the toast persists across page transitions and never flickers during navigation.
+**Via Bridge:** `__nbBridge('toast', payload)` sends a message to the parent shell. The bridge looks up the `toast` component in the registry and calls its `render()` function.
+
+**Via Blade:** The template outputs a hidden `<div data-nb="toast">` with data attributes. NativeBlade extracts this during page navigation and calls the shell `render()` function.
+
+In both cases, the toast appears as a floating element in the parent window, outside the iframe. It persists across page transitions and never flickers.
 
 ## License
 
