@@ -1,6 +1,6 @@
 <?php
 
-namespace NativeBlade\Toast\Components;
+namespace App\NativeBlade\Components;
 
 use Illuminate\View\Component;
 
@@ -14,6 +14,6 @@ class Toast extends Component
 
     public function render()
     {
-        return view('nb-toast::toast');
+        return view('nbc::toast');
     }
 }
