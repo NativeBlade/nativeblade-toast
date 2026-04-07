@@ -12,8 +12,6 @@ That's it. Run `php artisan nativeblade:dev` and the component is synced automat
 
 ## Usage
 
-### Via JavaScript (Bridge)
-
 ```blade
 <button onclick="__nbBridge('toast', { message: 'Saved!', type: 'success' })">
     Save
@@ -28,24 +26,13 @@ That's it. Run `php artisan nativeblade:dev` and the component is synced automat
 </button>
 ```
 
-### Via Blade Component
-
-```blade
-<x-nativeblade-toast message="Settings saved!" type="success" />
-
-@if($saved)
-    <x-nativeblade-toast message="Done!" type="success" />
-@endif
-```
-
-### Via Shell JS
+### From Shell JS
 
 ```javascript
 import { nb } from '@nativeblade/wasm-app/nb.js';
 
-nb.navigate('/settings');
-// toast from shell component
-window.__nb.navigate('/save');
+// After an action, show toast via bridge
+window.__nb.navigate('/settings');
 ```
 
 ### Types
@@ -69,11 +56,7 @@ window.__nb.navigate('/save');
 
 This is a **shell component** — it renders outside the WebView in the native Tauri shell.
 
-**Via Bridge:** `__nbBridge('toast', payload)` sends a message to the parent shell. The bridge looks up the `toast` component in the registry and calls its `render()` function.
-
-**Via Blade:** The template outputs a hidden `<div data-nb="toast">` with data attributes. NativeBlade extracts this during page navigation and calls the shell `render()` function.
-
-In both cases, the toast appears as a floating element in the parent window, outside the iframe. It persists across page transitions and never flickers.
+`__nbBridge('toast', payload)` sends a message to the parent shell. The bridge looks up the `toast` component in the registry and calls its `render()` function. The toast appears as a floating element in the parent window, outside the iframe.
 
 ## License
 
