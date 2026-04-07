@@ -1,0 +1,31 @@
+{
+    "name": "nativeblade/toast",
+    "description": "Toast notification component for NativeBlade",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": "^8.3",
+        "nativeblade/nativeblade": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "NativeBlade\\Toast\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "NativeBlade\\Toast\\ToastServiceProvider"
+            ]
+        },
+        "nativeblade": {
+            "components": {
+                "toast": "NativeBlade\\Toast\\Components\\Toast"
+            },
+            "views": "resources/views",
+            "js": {
+                "toast": "resources/js/toast.js"
+            }
+        }
+    }
+}
