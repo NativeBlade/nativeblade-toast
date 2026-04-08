@@ -12,27 +12,37 @@ That's it. Run `php artisan nativeblade:dev` and the component is synced automat
 
 ## Usage
 
+### Blade (Livewire directive)
+
 ```blade
-<button onclick="__nbBridge('toast', { message: 'Saved!', type: 'success' })">
+<button wire:nb-bridge="toast" wire:nb-payload='{"message":"Saved!","type":"success"}'>
     Save
 </button>
 
-<button onclick="__nbBridge('toast', { message: 'Something went wrong', type: 'error' })">
+<button wire:nb-bridge="toast" wire:nb-payload='{"message":"Something went wrong","type":"error"}'>
     Delete
 </button>
 
-<button onclick="__nbBridge('toast', { message: 'Check your input', type: 'warning', duration: 5000 })">
+<button wire:nb-bridge="toast" wire:nb-payload='{"message":"Check your input","type":"warning","duration":5000}'>
     Validate
 </button>
 ```
 
-### From Shell JS
+### Inline (onclick)
 
-```javascript
-import { nb } from '@nativeblade/wasm-app/nb.js';
+```blade
+<button onclick="__nbBridge('toast', { message: 'Saved!', type: 'success' })">
+    Save
+</button>
+```
 
-// After an action, show toast via bridge
-window.__nb.navigate('/settings');
+### From PHP (NativeResponse)
+
+```php
+use NativeBlade\Facades\NativeBlade;
+
+// Show toast after a Livewire action
+NativeBlade::response()->alert('Saved!')->toResponse();
 ```
 
 ### Types
@@ -56,7 +66,7 @@ window.__nb.navigate('/settings');
 
 This is a **shell component** — it renders outside the WebView in the native Tauri shell.
 
-`__nbBridge('toast', payload)` sends a message to the parent shell. The bridge looks up the `toast` component in the registry and calls its `render()` function. The toast appears as a floating element in the parent window, outside the iframe.
+`wire:nb-bridge="toast"` triggers a click handler that sends a message to the parent shell via `postMessage`. The bridge looks up the `toast` component in the registry and calls its `render()` function. The toast appears as a floating element in the parent window, outside the iframe.
 
 ## License
 
